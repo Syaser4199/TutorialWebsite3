@@ -8,111 +8,113 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
     <style>
+
         body{
-            background-color:gray;
+            background-image:url("https://images.8tracks.com/cover/i/001/322/212/63421.original-5139.jpg?rect=21,0,351,351&q=98&fm=jpg&fit=max");
         }
         #myPage .panel {
             width: 400px;	float: left;	margin: 20px;
         }
         #myPage .panel-heading {
-            background-color: blue;		color: white; 
+            background-color: brown;		color: white; 
         }		  
         #myPage .panel-body {
-            background-color: #F0F8FF;		color: black; 
+            background-color: brown;		color: black; 
         }
         #myPage .panel-footer {
-            background-color: #7FFFD4;		color: black; 
+            background-color: brown;		color: black; 
         }
-        .mytext{
-            font-size: 18pt;
-            margin-left: 40px;
         }
-        .jumbotron{
-            text-align: center;
-            color: white;
-            background-image: url(https://cdn.pixabay.com/photo/2017/07/01/19/48/background-2462436__340.jpg);
+        h1{
+            font-size:40pt;
+            color: black;
+            font-family: "Times New Roman", Times, serif;
+           
         }
-        .titles{
-            background-color:blue;
-            color:white;
-            text-align:center;
+        h2{
+            color:black;
         }
-        .logo{
-            width:90%;
+        h3{
+            font-size:20pt;
+            color:black;
         }
+        
         .item img{
             width:1000px;
-        }      
+        }    
+        .button{
+            color:black;
+            background-color: gray;
+
+        }  
     </style>
 
     <script type="text/template" id="Template">
-        <div class="panel panel-default">
-            <div class="panel-heading"> Que {{qNum}}:  {{info.question}} </div>
+        <div class="w3-panel w3-border-left w3-brown">
+            <div class="w3-panel w3-border-left w3-brown"> Que {{qNum}}:  {{info.question}} </div>
             <div class="panel-body"> A. {{info.choice1}} </div>
             <div class="panel-body"> B. {{info.choice2}} </div>
             <div class="panel-body"> C. {{info.choice3}} </div>
-            <div class="panel-body"> D. {{info.choice4}} </div>			
-            <div class="panel-footer">
+            <div class="panel-body"> D. {{info.choice4}} </div>         
+            <div class="w3-panel w3-border-left w3-brown">
                 <input type="text" id="{{qKey}}" placeholder="Choice letter">
             </div>
         </div>
     </script>
 
     <script>
-        var data; //global variable
+        var data; 
+        function getData(){         
+            $.getJSON("https://webpage-project-97abe.firebaseio.com/.json", function(result){
+                data = result;
+                displayQuestions(); 
+            }); 
+        }
+    
 
-		function getData(){       	
-			$.getJSON("https://webpage-project-97abe.firebaseio.com/.json", function(result){
-				data = result;
-                displayQuestions();	
-			});	
-		}
-	
-		// DISPLAY QUESTIONS
-		function displayQuestions(){
-			var build ="";
-			var template = document.getElementById("Template").innerHTML;  
-			var qNumber =0; // Question number
-		
-			for(var key in data){
-				qNumber++;
-				quesJSON ={
-					"info": data[key], 
-					"qKey": key,
-					"qNum": qNumber
-				}
-				build += Mustache.render(template, quesJSON);     
-			}
-			document.getElementById("quiz").innerHTML = build;							
-		}                    
-		
-		// CHECK ANSWERS AND CALCULATE SCORE
-		function checkAnswers(){
-			var score = 0;
-			var count = 0;
-			for(var key in data){
+        function displayQuestions(){
+            var build ="";
+            var template = document.getElementById("Template").innerHTML;  
+            var qNumber =0; 
+        
+            for(var key in data){
+                qNumber++;
+                quesJSON ={
+                    "info": data[key], 
+                    "qKey": key,
+                    "qNum": qNumber
+                }
+                build += Mustache.render(template, quesJSON);     
+            }
+            document.getElementById("quiz").innerHTML = build;                          
+        }                    
+        
+  
+        function checkAnswers(){
+            var score = 0;
+            var count = 0;
+            for(var key in data){
                 var correctAns = data[key].answer;
-				var userAns = document.getElementById(key).value;				
+                var userAns = document.getElementById(key).value;               
                 count++;
-				if (userAns.toUpperCase() == correctAns){
-					score++;
-				}
-                var grd = (score/count * 100).toFixed(0);		
-			}
-			document.getElementById("score").innerHTML = "<h1>You answered " + score + " out of " + count+" questions correctly!<br><br>That's a grade of<b> "+ grd + "%</b></h1>"; 
-		}
-	</script>
+                if (userAns.toUpperCase() == correctAns){
+                    score++;
+                }
+                var grd = (score/count * 100).toFixed(0);       
+            }
+            document.getElementById("score").innerHTML = "<h3>You answered " + score + " out of " + count+" questions correctly!<br><br>Your Grade will be<b> "+ grd + "%</b></h3>"; 
+        }
+    </script>
 </head>
 <body onload="getData()" id="myPage">
         <div class="container">
-
-                <div class="jumbotron">
                         <h1> QUIZ </h1>
-                        <p>Multiple Choice Quiz</p> 
                 </div>
                     
-                 <nav class="navbar navbar-inverse">
+                <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand" </a>
@@ -120,19 +122,19 @@
                     <div class="container-fluid">
                             <ul class="nav navbar-nav">
                                 <li class="active"><a href="Website.html">Home</a></li>
-                                <li><a href="class.html">Drug Classification</a></li>
+                                <li><a href="Classtest.html">Drug Classification</a></li>
                                 <li><a href="quiz.html">Quiz</a></li>
-                                <li><a href="Tutorial_PictureGallery.html">Gallery</a></li>
-                                <li><a href="Tutorial_Quiz.html">Quiz</a></li>
+                            
                             </ul>
                              </div>
-                              </div>
+                    </div>
+                </nav>
                 </nav>
 
-                <h1>Enter your choices below. Then press "Score Quiz"</h1>
+                <h2>Enter your choices below. Then press "Score Quiz"</h2>
                 
                 <div id="quiz"></div>
-                    <button onclick="checkAnswers()" type="button" class="btn btn-success btn-lg">SCORE QUIZ</button>
+                    <button onclick="checkAnswers()" type="button" class="btn btn-success btn-lg" style = "color: gray;">SCORE QUIZ</button>
                 <div id="score"></div>
 
         </div>
